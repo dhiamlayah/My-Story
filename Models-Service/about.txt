@@ -1,0 +1,1 @@
+here we write fastApi Code where we put our IA models 
