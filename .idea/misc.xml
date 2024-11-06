@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/config.server/pom.xml" />
         <option value="$PROJECT_DIR$/User-Management-Service/auth/pom.xml" />
         <option value="$PROJECT_DIR$/../../s1 3emme anne/Microservices_using_SpringBoot/config.server/pom.xml" />
+        <option value="$PROJECT_DIR$/Gateway/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

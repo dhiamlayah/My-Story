@@ -10,6 +10,7 @@
         <module name="config.server" />
         <module name="designingapp" />
         <module name="discovery" />
+        <module name="Gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -19,6 +20,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Gateway" options="-parameters" />
       <module name="config.server" options="-parameters" />
       <module name="config.server (1)" options="-parameters" />
       <module name="config.server (2)" options="-parameters" />
