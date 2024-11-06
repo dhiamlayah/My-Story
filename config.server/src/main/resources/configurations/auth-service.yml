@@ -14,9 +14,12 @@ spring:
 
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/auth_app
-    username: username
-    password: password
+    #url: jdbc:postgresql://localhost:5432/auth_app
+    #username: username
+    #password: password
+    url: jdbc:postgresql://aws-0-eu-central-1.pooler.supabase.com:6543/postgres
+    username: postgres.uxdjecmrgvqalupolapz
+    password: Supa92231411base
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
