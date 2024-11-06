@@ -7,4 +7,4 @@ import { ImageProcessingService } from './image-processing.service';
   controllers: [ImageProcessingController],
   providers: [ImageProcessingService]
 })
-export class ImageProcessingModule {}
+export class ImageProcessingModule { }
