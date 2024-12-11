@@ -20,6 +20,7 @@ export async function resizeImage(file: Express.Multer.File, size: { width?: num
         return imageInformation
     } catch (error: any) {
         throw new Error("error in resizing image")
+        console.log('test')
     }
 
 
