@@ -2,25 +2,39 @@ import path from "path";
 import * as fs from 'fs';
 import sharp from "sharp";
 
-export async function resizeImage(file: Express.Multer.File, size: { width?: number, height?: number }, userId?: string) {
-    let uploadDir = path.join(__dirname, '..', '..', 'uploads');
-    if (!userId) {
-        uploadDir = uploadDir + "/visiter"
-    } else {
-        uploadDir = uploadDir + "/" + userId
-    }
-    if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-    }
+interface ImageResized {
+    width : number,
+    height : number,
+    path:string,
+    filename  : string ,
+    date : Date
+}
+
+export async function resizeImage(file: Express.Multer.File, size: { width?: number, height?: number }, userId?:string) : Promise<ImageResized> {
+    let uploadDir = path.join(__dirname, '..', '..', 'uploads',`${userId?userId:"visiter"}`);   // folder path 
+    !fs.existsSync(uploadDir) && fs.mkdirSync(uploadDir, { recursive: true });                  //check folder exist or create new one 
     try {
-        let imageInformation               //store the image metadata on it  
-        const filename = `${Date.now()}-${file.originalname}`;  //give the file a name 
+        const filename = `${Date.now()}-${file.originalname}`;                                  //give the file a name 
         const filepath = path.join(uploadDir, filename);
-        await sharp(file.buffer).resize(size).toFile(filepath).then((data) => { imageInformation = data })
-        return imageInformation
-    } catch (error: any) {
-        throw new Error("error in resizing image")
-        console.log('test')
+        const image =  sharp(file.buffer)
+        let imageResized : ImageResized
+        await image.metadata().then((metadata)=>{
+            if(metadata.width>size.width || metadata.height>size.height){
+                image.resize(400)
+            }
+            return image.toFile(`${filepath}`)
+        }).then((imageData)=>{
+             imageResized = {
+                width:imageData.width,
+                height:imageData.height,
+                path:filepath,
+                filename : filename,
+                date:new Date()              
+            }
+        })
+        return imageResized
+    } catch (error: unknown) {
+        throw new Error(`Error in Resizing Image ${error}`)
     }
 
 
