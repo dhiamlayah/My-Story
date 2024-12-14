@@ -5,9 +5,20 @@ import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { Eureka } from 'eureka-js-client';
+const cors = require('cors');
+
+
+
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cors({
+    origin: 'http://localhost:3000', // Allow only your frontend domain
+    methods: ['GET', 'POST'], // Allow specific HTTP methods
+    credentials: true, // If you need to send cookies
+  }));
 
   app.useGlobalPipes(new ValidationPipe());
 

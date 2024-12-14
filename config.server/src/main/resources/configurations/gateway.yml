@@ -28,8 +28,12 @@ spring :
             uri: http://localhost:5000
             predicates:
               - Path=/predict/**
-              - Path=/predict
+          - id : image-processing-service
+            uri: http://localhost:3001
+            predicates:
+              - Path=/image-processing/**
 
+            
 
 
 

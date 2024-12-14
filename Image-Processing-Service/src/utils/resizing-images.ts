@@ -17,8 +17,13 @@ export async function resizeImage(file: Express.Multer.File, size: { width?: num
         let imageInformation                                    //store the image metadata on it  
         const filename = `${Date.now()}-${file.originalname}`;  //give the file a name 
         const filepath = path.join(uploadDir, filename);
+        
         await sharp(file.buffer).resize(size).toFile(filepath).then((data) => { imageInformation = data })
-        return imageInformation
+    
+        return {
+            imageInformation,
+            filepath //return the path of the image formated
+        };
     } catch (error: any) {
         throw new Error("error in resizing image")
         console.log('test')
