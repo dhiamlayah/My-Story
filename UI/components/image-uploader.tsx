@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ImagePlus, Loader2 } from "lucide-react";
@@ -35,7 +33,7 @@ export function ImageUploader() {
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("id", "100"); // Replace with dynamic ID if needed
-
+    console.log('formdata==>',formData)
     try {
       const response = await axios.post(
         "http://localhost:8222/image-processing/upload-image/",
@@ -45,7 +43,7 @@ export function ImageUploader() {
             "Content-Type": "multipart/form-data",
           },
         }
-      );
+      )
 
       const originalPath = response.data.filepath; // E.g., "C:\\Users\\pc\\Desktop\\MyGitProjects\\My-Story-Init_Microservices_arch\\Image-Processing-Service\\uploads\\12345\\1734118485496-OrangeLores.png";
       const processedPath = originalPath

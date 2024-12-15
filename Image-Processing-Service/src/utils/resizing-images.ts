@@ -5,12 +5,12 @@ import sharp from "sharp";
 interface ImageResized {
     width : number,
     height : number,
-    path:string,
+    filepath:string,
     filename  : string ,
     date : Date
 }
 
-export async function resizeImage(file: Express.Multer.File, size: { width?: number, height?: number }, userId?:string) : Promise<ImageResized> {
+export async function resizeImage(file: Express.Multer.File, size: { width?: number, height?: number }, userId?:string) : Promise<ImageResized|any> {
     let uploadDir = path.join(__dirname, '..', '..', 'uploads',`${userId?userId:"visiter"}`);   // folder path 
     !fs.existsSync(uploadDir) && fs.mkdirSync(uploadDir, { recursive: true });                  //check folder exist or create new one 
     try {
@@ -27,7 +27,7 @@ export async function resizeImage(file: Express.Multer.File, size: { width?: num
              imageResized = {
                 width:imageData.width,
                 height:imageData.height,
-                path:filepath,
+                filepath:filepath,
                 filename : filename,
                 date:new Date()              
             }
