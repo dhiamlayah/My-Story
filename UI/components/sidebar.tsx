@@ -35,7 +35,7 @@ export function Sidebar() {
     <div className="pb-12 w-64">
       <div className="space-y-4 py-4">
         <div className="px-3 py-2 flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Caption AI</h2>
+          <h2 className="text-lg font-semibold tracking-tight">My-Story</h2>
           <ThemeToggle />
         </div>
         <div className="px-3 py-2">
