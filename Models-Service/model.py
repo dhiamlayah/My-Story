@@ -29,13 +29,14 @@ max_length = 16
 num_beams = 4
 gen_kwargs = {"max_length": max_length, "num_beams": num_beams}
 
-path = ["hello.jpg"]
+path = [""]
 
 def predict_step(image_paths):
     images = []
     for image_path in image_paths:
         try:
             i_image = Image.open(image_path)
+            print("image opened successfully !")
             if i_image.mode != "RGB":
                 i_image = i_image.convert(mode="RGB")
             images.append(i_image)
@@ -60,3 +61,4 @@ def predict_step(image_paths):
 
 # Run the prediction
 
+#predict_step([])

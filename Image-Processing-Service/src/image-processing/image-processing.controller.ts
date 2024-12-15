@@ -8,7 +8,7 @@ export class ImageProcessingController {
 
     constructor(private imageProcessingService: ImageProcessingService) { }
 
-    @Post('/upload-image')
+    @Post('upload-image')
     @UseInterceptors(FileInterceptor('file', {
         fileFilter: (req, file, cb) => {
             if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {

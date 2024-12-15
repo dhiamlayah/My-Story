@@ -1,26 +1,70 @@
 "use client";
 
+
+
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import axios from "axios";
 
 export function ImageUploader() {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [caption, setCaption] = useState<string | null>(null);
+  const [path, setPath] = useState<string | null>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+  const [file, setFile] = useState<File | null>(null);
+
+
+
+  //Detect the image and call the resizing service (response : url of the image)
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const selectedFile = acceptedFiles[0];
+    setImage(URL.createObjectURL(selectedFile));
+    setFile(selectedFile);
+
+    // Trigger generation automatically
+    console.log("File loaded!");
+
+    setLoading(true);
+    setCaption(null);
+
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("id", "100"); // Replace with dynamic ID if needed
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8222/image-processing/upload-image/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const originalPath = response.data.filepath; // E.g., "C:\\Users\\pc\\Desktop\\MyGitProjects\\My-Story-Init_Microservices_arch\\Image-Processing-Service\\uploads\\12345\\1734118485496-OrangeLores.png";
+      const processedPath = originalPath
+        .replace(/\\/g, '/') // Replace backslashes with forward slashes
+        .replace(/^.*\/Image-Processing-Service/, '../Image-Processing-Service') // Extract relative path
+        .replace(/\/\d+\//, '/100/'); // Replace folder name with "100" if u need to make it dynamic
+
+      console.log("Processed Path:", processedPath);
+      setPath(processedPath);
+    } catch (error) {
+      console.error("Error generating caption:", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
+
+
+
+
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -31,11 +75,36 @@ export function ImageUploader() {
   });
 
   const handleGenerate = async () => {
-    if (!image) return;
+    if (!file) return;
     setLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setLoading(false);
+    
+    try {
+
+
+
+      // Step 2: Use the processed path to call the predict endpoint
+      const predictResponse = await axios.post(
+        "http://localhost:5000/predict",
+        {
+          image_paths: [path],
+          userId: 100,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const prediction = predictResponse.data.predictions[0]; // Assuming the response contains a 'caption' field
+      setCaption(prediction);
+      console.log(caption)
+
+    } catch (error) {
+      console.error("Error generating caption:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -87,7 +156,14 @@ export function ImageUploader() {
 
       {loading && (
         <div className="text-center text-sm text-gray-500">
-          Our AI is analyzing your image...
+          Generating caption...
+        </div>
+      )}
+
+      {caption && (
+        <div className="p-4 border border-gray-200 rounded-lg">
+          <p className="text-lg font-semibold text-gray-800">Caption:</p>
+          <p className="text-gray-600">{caption}</p>
         </div>
       )}
     </div>
